@@ -43,36 +43,33 @@
         </div>
         <% } %>
         
-        <form action="JugadorServlet" method="POST">
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required 
-                       maxlength="20" placeholder="Ingresa tu nombre">
-            </div>
-            <div class="form-group">
-                <label for="codigoSala">Código de Sala:</label>
-                <input type="text" id="codigoSala" name="codigoSala" required 
-                       maxlength="10" placeholder="Código de la sala">
-            </div>
-            <button type="submit">Unirse a la Partida</button>
+        <h2>Ingresar como Admin</h2>
+        <form action="CrearPartidaServlet" method="post">
+            <label>Código de Sala (opcional):</label>
+            <input type="text" name="codigoSala" placeholder="Dejar vacío para auto-generar">
+            <button type="submit">Crear Partida</button>
         </form>
-        
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ccc;">
-            <h3>¿Eres el administrador?</h3>
-            <form action="AdminServlet" method="GET">
-                <div class="form-group">
-                    <label for="adminCodigoSala">Código de Sala para administrar:</label>
-                    <input type="text" id="adminCodigoSala" name="codigoSala" required 
-                           maxlength="10" placeholder="Código de sala">
-                </div>
-                <button type="submit" style="background-color: #f44336;">Acceder como Admin</button>
-            </form>
+
+        <hr>
+
+        <h2>Ingresar como Jugador</h2>
+        <form action="UnirsePartidaServlet" method="post">
+            <label>Nombre:</label>
+            <input type="text" name="nombre" required>
+            <label>Código de Sala:</label>
+            <input type="text" name="codigoSala" required>
+            <button type="submit">Unirse</button>
+        </form>
+
+
+            
         </div>
         
         <div style="margin-top: 20px; font-size: 14px; color: #666;">
             <p>💡 <strong>Para jugadores:</strong> Ingresa tu nombre y el código de sala que te proporcionó el administrador.</p>
             <p>🛠️ <strong>Para administradores:</strong> Ingresa el código de sala que quieres administrar.</p>
         </div>
+
     </div>
 </body>
 </html>
