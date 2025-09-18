@@ -1,8 +1,6 @@
-
-// ⚡ Variables que JSP inyectará dinámicamente en <script> antes de este archivo
-
-let estadoPartida = window.estadoPartida || "";
-let tipoJuego = window.tipoJuego || "";
+// ⚡ Variables obtenidas desde los inputs ocultos del JSP
+let estadoPartida = document.getElementById("estadoPartida")?.value || "";
+let tipoJuego = document.getElementById("tipoJuego")?.value || "";
 
 // Sacar bola
 function sacarBola() {
@@ -14,11 +12,8 @@ function sacarBola() {
     fetch("BolaServlet", { method: "POST" })
         .then(r => r.json())
         .then(data => {
-            if (data.success) {
-                setTimeout(() => location.reload(), 500);
-            } else {
-                alert("Error: " + data.error);
-            }
+            if (data.success) setTimeout(() => location.reload(), 500);
+            else alert("Error: " + data.error);
         })
         .catch(e => alert("Error al sacar bola: " + e));
 }
@@ -29,14 +24,9 @@ function cambiarEstado(accion, fromSacarBola = false) {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                if (fromSacarBola && accion === "iniciar") {
-                    setTimeout(sacarBola, 1000);
-                } else {
-                    location.reload();
-                }
-            } else {
-                alert("Error: " + data.error);
-            }
+                if (fromSacarBola && accion === "iniciar") setTimeout(sacarBola, 1000);
+                else location.reload();
+            } else alert("Error: " + data.error);
         })
         .catch(e => alert("Error al cambiar estado: " + e));
 }
@@ -59,16 +49,14 @@ function verificarGanadores() {
     fetch("AdminServlet?accion=verificarGanadores", { method: "POST" })
         .then(r => r.json())
         .then(data => {
-            if (data.hayGanador) {
-                cambiarEstado("finalizar");
-            }
+            if (data.hayGanador) cambiarEstado("finalizar");
         });
 }
 
-// Auto-refresh segun estado (esto lo controla JSP con flags globales)
-if (window.autoRefresh) {
+// Auto-refresh según estado
+if (estadoPartida === "espera" || estadoPartida === "en_juego") {
     setInterval(() => location.reload(), 5000);
 }
-if (window.checkGanadores) {
+if (estadoPartida === "en_juego") {
     setInterval(verificarGanadores, 3000);
 }
