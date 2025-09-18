@@ -1,161 +1,61 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.bingo.model.Partida" %>
-<%@ page import="com.bingo.model.Jugador" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.guillermo_aguilar.bingo.model.Partida" %>
+<%@ page import="com.guillermo_aguilar.bingo.model.Jugador" %>
 <%@ page import="java.util.List" %>
-
-<%
-    Partida partida = (Partida) session.getAttribute("partida");
-    if (partida == null) {
-        response.sendRedirect("index.jsp");
-        return;
-    }
-
-    Boolean esAdmin = (Boolean) session.getAttribute("esAdmin");
-    if (esAdmin == null || !esAdmin) {
-        response.sendRedirect("carton.jsp");
-        return;
-    }
-
-    List<Jugador> jugadores = partida.getJugadores();
-    String estadoPartida = partida.getEstado();
-    String tipoJuego = partida.getTipo();
-    List<Integer> bolasSorteadas = partida.getBolasSalidas();
-%>
-
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Panel de Administración - Bingo</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <title>Administrador de Partida</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <h1>🎮 Panel de Administración - Bingo</h1>
+    <% 
+        Partida partida = (Partida) getServletContext().getAttribute("partidaGlobal");
+        Jugador jugadorAdmin = (Jugador) session.getAttribute("jugador");
+        if (partida == null || jugadorAdmin == null || !jugadorAdmin.esAdmin()) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
 
-    <!-- Inputs ocultos para JS -->
-    <input type="hidden" id="estadoPartida" value="<%= estadoPartida %>">
-    <input type="hidden" id="tipoJuego" value="<%= tipoJuego %>">
-
-    <!-- Estado de la Partida -->
-    <div class="estado-partida <%= estadoPartida %>">
-        <% if ("espera".equals(estadoPartida)) { %>
-            ⏳ PARTIDA EN ESPERA
-        <% } else if ("en_juego".equals(estadoPartida)) { %>
-            🎯 PARTIDA EN JUEGO - <%= bolasSorteadas.size() %> bolas sorteadas
-        <% } else if ("finalizada".equals(estadoPartida)) { %>
-            ✅ PARTIDA FINALIZADA - <%= bolasSorteadas.size() %> bolas totales
-        <% } %>
-    </div>
-
-    <div class="panel-admin">
-        <!-- Controles de Partida -->
-        <div class="controles-admin">
-            <h2>🛠️ Controles de Partida</h2>
-            <div class="estadisticas">
-                <div class="estadistica-item">
-                    <span class="numero-grande"><%= jugadores.size() %></span> Jugadores
-                </div>
-                <div class="estadistica-item">
-                    <span class="numero-grande"><%= bolasSorteadas.size() %></span> Bolas
-                </div>
-                <div class="estadistica-item">
-                    <span class="numero-grande"><%= partida.getBombo().getBolas().size() %></span> Restantes
-                </div>
-            </div>
-
-            <div style="text-align: center;">
-                <button class="btn-admin btn-iniciar" 
-                        onclick="cambiarEstado('iniciar')"
-                        <%= !"espera".equals(estadoPartida) ? "disabled" : "" %>>
-                    ▶️ Iniciar Partida
-                </button>
-                <button class="btn-admin btn-sacar-bola" 
-                        onclick="sacarBola()"
-                        <%= !"en_juego".equals(estadoPartida) ? "disabled" : "" %>>
-                    🎲 Sacar Bola
-                </button>
-                <button class="btn-admin btn-finalizar" 
-                        onclick="cambiarEstado('finalizar')"
-                        <%= !"en_juego".equals(estadoPartida) ? "disabled" : "" %>>
-                    ⏹️ Finalizar Partida
-                </button>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <label for="tipoJuego"><strong>Modo de Juego:</strong></label>
-                <select id="tipoJuego" onchange="cambiarTipoJuego()" 
-                        style="padding: 8px; border-radius: 4px; border: 1px solid #ddd; margin-left: 10px;"
-                        <%= !"espera".equals(estadoPartida) ? "disabled" : "" %>>
-                    <option value="linea" <%= "linea".equals(tipoJuego) ? "selected" : "" %>>Línea</option>
-                    <option value="fullhouse" <%= "fullhouse".equals(tipoJuego) ? "selected" : "" %>>Bingo Completo</option>
-                </select>
-            </div>
-
-            <!-- Últimas 5 Bolas -->
-            <div style="margin-top: 20px;">
-                <h3>🎯 Últimas 5 Bolas Sorteadas</h3>
-                <div class="ultimas-bolas-container" id="ultimasBolasContainer">
-                    <%
-                        int start = Math.max(0, bolasSorteadas.size() - 5);
-                        for (int i = start; i < bolasSorteadas.size(); i++) {
-                    %>
-                        <div class="bola-grande"><%= bolasSorteadas.get(i) %></div>
-                    <% } %>
-                    <% if (bolasSorteadas.isEmpty()) { %>
-                        <p>No se han sacado bolas todavía.</p>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-
-        <!-- Información de Partida -->
-        <div>
-            <h2>👥 Jugadores Conectados (<%= jugadores.size() %>)</h2>
-            <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: white;">
-                <% if (jugadores.isEmpty()) { %>
-                    <p>No hay jugadores conectados.</p>
-                <% } else { %>
-                    <% for (Jugador jugador : jugadores) { %>
-                        <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                            👤 <%= jugador.getNombre() %>
-                        </div>
-                    <% } %>
+        List<Jugador> jugadores = partida.getJugadores();
+        String estadoPartida = partida.getEstado();
+        int ultimaBolaSorteada = partida.getUltimaBolaSorteada();
+    %>
+    <div class="container">
+        <h1>Panel de Administración</h1>
+        <div class="card">
+            <h2>Estado de la Partida</h2>
+            <p>Estado: **<%= estadoPartida %>**</p>
+            <% if (estadoPartida.equals("espera")) { %>
+                <form action="partida" method="post">
+                    <input type="hidden" name="action" value="iniciar">
+                    <button type="submit" <%= jugadores.size() < 2 ? "disabled" : "" %>>
+                        Iniciar Partida
+                    </button>
+                </form>
+                <% if (jugadores.size() < 2) { %>
+                    <p style="color:red;">Se necesitan al menos 2 jugadores para iniciar.</p>
                 <% } %>
-            </div>
-
-            <h3 style="margin-top: 20px;">📋 Código de Sala:</h3>
-            <div style="background-color: #007bff; color: white; padding: 15px; border-radius: 8px; text-align: center; font-size: 20px; font-weight: bold; margin: 10px 0;">
-                <%= partida.getId() %>
-            </div>
-
-            <% if ("finalizada".equals(estadoPartida)) { %>
-            <div class="ganadores-container">
-                <h3>🏆 Ganadores</h3>
-                <div id="ganadoresList">
-                    <p>La partida ha finalizado.</p>
-                </div>
-            </div>
+            <% } else if (estadoPartida.equals("en_curso")) { %>
+                <form action="partida" method="post">
+                    <input type="hidden" name="action" value="sortear">
+                    <button type="submit">Sortear Nueva Bola</button>
+                </form>
+                <% if (ultimaBolaSorteada != 0) { %>
+                    <p>Última bola sorteada: <strong><%= ultimaBolaSorteada %></strong></p>
+                <% } %>
+            <% } %>
+        </div>
+        <div class="card">
+            <h2>Jugadores Conectados</h2>
+            <% if (jugadores.isEmpty()) { %>
+                <p>No hay jugadores conectados.</p>
+            <% } else { %>
+                <% for (Jugador jugador : jugadores) { %>
+                    <p>👤 <%= jugador.getNombre() %></p>
+                <% } %>
             <% } %>
         </div>
     </div>
-
-    <!-- Tablero de Bolas 1-75 -->
-    <h2>📊 Tablero de Números Sorteados (1-75)</h2>
-    <div class="tablero-bolas" id="tableroBolas">
-        <% for (int numero = 1; numero <= 75; numero++) { %>
-            <div class="numero-tablero <%= bolasSorteadas.contains(numero) ? "sorteado" : "" %>" 
-                 id="bola-<%= numero %>">
-                <%= numero %>
-            </div>
-        <% } %>
-    </div>
-
-    <div style="margin-top: 20px; text-align: center;">
-        <a href="index.jsp" style="color: #007bff; text-decoration: none; font-size: 16px;">← Volver al inicio</a>
-    </div>
-</div>
-
-<script src="${pageContext.request.contextPath}/js/admin.js"></script>
 </body>
 </html>

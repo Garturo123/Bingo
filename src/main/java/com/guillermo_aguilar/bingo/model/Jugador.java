@@ -1,23 +1,24 @@
 package com.guillermo_aguilar.bingo.model;
 
 public class Jugador {
-    private String id;
     private String nombre;
-    private Carton carton;
-    
-    public Jugador(String id, String nombre, Carton carton) {
-        this.id = id;
+    private boolean esAdmin;
+
+    public Jugador(String nombre) {
         this.nombre = nombre;
-        this.carton = carton;
+        this.esAdmin = false;
     }
-    
-    // Getters y setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    
-    public Carton getCarton() { return carton; }
-    public void setCarton(Carton carton) { this.carton = carton; }
+
+    public Jugador(String nombre, boolean esAdmin) {
+        this.nombre = nombre;
+        this.esAdmin = esAdmin;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public boolean esAdmin() {
+        return esAdmin;
+    }
 }
