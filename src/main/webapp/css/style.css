@@ -1,0 +1,78 @@
+/* Estilos para el tablero de administrador */
+.tablero-bolas {
+    display: grid;
+    grid-template-columns: repeat(15, 40px);
+    grid-template-rows: repeat(5, 40px);
+    gap: 2px;
+    margin: 20px 0;
+    max-width: 630px;
+}
+
+.numero-tablero {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.numero-tablero.sorteado {
+    background-color: #ff5722;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Bolas grandes para últimas bolas */
+.bola-grande {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #2196f3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Estado de partida */
+.estado-partida {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+}
+
+.espera { 
+    background-color: #fff3cd; 
+    color: #856404; 
+    border: 2px solid #ffeaa7; 
+}
+
+.en-juego { 
+    background-color: #d4edda; 
+    color: #155724; 
+    border: 2px solid #c3e6cb; 
+}
+
+.finalizada { 
+    background-color: #f8d7da; 
+    color: #721c24; 
+    border: 2px solid #f5c6cb; 
+}

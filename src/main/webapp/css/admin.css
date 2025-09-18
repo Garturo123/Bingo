@@ -1,0 +1,54 @@
+.panel-admin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.estado-partida {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+}
+
+.espera { background-color: #fff3cd; color: #856404; border: 2px solid #ffeaa7; }
+.en-juego { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+.finalizada { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+
+.controles-admin {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.btn-admin {
+    padding: 12px 20px;
+    margin: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-iniciar { background-color: #28a745; color: white; }
+.btn-sacar-bola { background-color: #007bff; color: white; }
+.btn-finalizar { background-color: #dc3545; color: white; }
+
+.btn-admin:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-admin:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ... todo el resto del CSS que tenías en tu <style> ... */
